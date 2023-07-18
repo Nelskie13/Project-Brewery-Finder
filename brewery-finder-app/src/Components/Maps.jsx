@@ -3,14 +3,8 @@ import { GoogleMap, useJsApiLoader, Marker } from "@react-google-maps/api";
 
 const API_KEY = "AIzaSyCq71N1GHDQWEhBF16jWgKY-pN4nM0fUFM";
 
-const defaultCenter = {
-  lat: 14.641196962144695,
-  lng: 121.12191730346366,
-};
-
-function Maps() {
+function Maps({ latitude, longitude }) {
   const [map, setMap] = useState(null);
-  const [latlong, setLatLong] = useState(defaultCenter);
 
   const { isLoaded, loadError } = useJsApiLoader({
     id: "google-map-script",
@@ -18,11 +12,15 @@ function Maps() {
   });
 
   useEffect(() => {
-    // Set the default center once the map is loaded
-    if (isLoaded && !latlong) {
-      setLatLong(defaultCenter);
-    }
-  }, [isLoaded, latlong]);
+    // Update the map center if latitude or longitude props change
+    setMap((prevMap) => ({
+      ...prevMap,
+      center: {
+        lat: latitude,
+        lng: longitude,
+      },
+    }));
+  }, [latitude, longitude]);
 
   const handleLoad = (map) => {
     setMap(map);
@@ -34,26 +32,33 @@ function Maps() {
 
   const handleMapClick = (e) => {
     // Update the center state with the clicked coordinates
-    setLatLong({
-      lat: e.latLng.lat(),
-      lng: e.latLng.lng(),
-    });
+    setMap((prevMap) => ({
+      ...prevMap,
+      center: {
+        lat: e.latLng.lat(),
+        lng: e.latLng.lng(),
+      },
+    }));
   };
 
   return (
     <>
       {loadError ? (
         <div>Error loading Google Map</div>
-      ) : isLoaded && latlong ? ( // Render the map only when it's loaded and latlong is available
+      ) : isLoaded && map ? (
+        // Render the map only when it's loaded and map is available
         <GoogleMap
           mapContainerStyle={{ width: "100%", height: "500px" }}
-          center={latlong}
-          zoom={19}
+          center={{
+            lat: latitude,
+            lng: longitude,
+          }}
+          zoom={15}
           onLoad={handleLoad}
           onUnmount={handleUnmount}
           onClick={handleMapClick}
         >
-          {map && <Marker position={latlong} />}
+          {map && <Marker position={{ lat: latitude, lng: longitude }} />}
         </GoogleMap>
       ) : (
         <div>Loading Google Map...</div>

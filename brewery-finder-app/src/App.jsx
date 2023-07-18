@@ -8,12 +8,12 @@ import {
 } from "react-router-dom";
 import BreweriesList from "./Components/BreweriesList";
 import BreweriesSearchBar from "./Components/BreweriesSearchBar";
-import Maps from "./Components/Maps";
 import BreweriesDetails from "./Components/BreweriesDetails";
+import Maps from "./Components/Maps";
 
 const BreweriesContainer = () => (
   <>
-    <Maps />
+    <Maps latitude={14.653175469001901} longitude={121.11740503132656} />
     <BreweriesSearchBar />
     <BreweriesList />
   </>
