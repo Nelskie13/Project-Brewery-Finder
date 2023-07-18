@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchBreweriesDetailsData } from "../Redux-store/BreweryDetailsSlice";
-import { Box, Typography, CircularProgress } from "@mui/material";
+import { Box, Typography, CircularProgress, Paper } from "@mui/material";
 import Maps from "./Maps";
 
 const LoadingState = () => (
@@ -53,7 +53,8 @@ const BreweryDetails = () => {
     return null; // Return null or display a message if the data is null
   }
 
-  const { name, street, city, state, country, latitude, longitude } = data;
+  const { name, street, city, state, country, latitude, longitude, phone } =
+    data;
 
   // Convert latitude and longitude from strings to numbers
   const lat = parseFloat(latitude);
@@ -73,14 +74,19 @@ const BreweryDetails = () => {
   }
 
   return (
-    <Box>
-      <Typography variant="h6">{name}</Typography>
-      <Typography variant="body1">
+    <Paper elevation={3} sx={{ p: 2, pb: 2 }}>
+      <Typography variant="h6" gutterBottom>
+        {name}
+      </Typography>
+      <Typography variant="body1" gutterBottom>
         Address: {street}, {city}, {state}, {country}.
+      </Typography>
+      <Typography variant="body1" gutterBottom>
+        Phone: {phone}
       </Typography>
       {/* Pass the latitude and longitude as numbers to the Maps component */}
       <Maps latitude={lat} longitude={lng} />
-    </Box>
+    </Paper>
   );
 };
 

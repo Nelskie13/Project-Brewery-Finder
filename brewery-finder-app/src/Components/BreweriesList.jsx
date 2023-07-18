@@ -7,11 +7,9 @@ import {
   CircularProgress,
   List,
   ListItem,
-  Stack,
 } from "@mui/material";
 import { Link } from "react-router-dom";
 
-// Create a separate component for displaying loading state
 const LoadingState = () => (
   <Box
     display="flex"
@@ -23,7 +21,6 @@ const LoadingState = () => (
   </Box>
 );
 
-// Create a separate component for displaying error state
 const ErrorState = ({ error }) => (
   <Box
     display="flex"
@@ -54,8 +51,8 @@ const BreweriesList = () => {
   }
 
   return (
-    <Stack spacing={2}>
-      <Typography variant="h4" component="h2" mt={10}>
+    <Box>
+      <Typography variant="h4" component="h2" mt={8}>
         List of Breweries
       </Typography>
       {data.length > 0 ? (
@@ -65,19 +62,22 @@ const BreweriesList = () => {
               key={brewery.id}
               component={Link}
               to={`/Breweries/${brewery.id}`}
+              sx={{ textDecoration: "none", color: "inherit" }}
             >
-              <Typography variant="body1">{brewery.name}</Typography>
-              <Typography variant="body2" color="textSecondary">
-                Address: {brewery.street}, {brewery.city}, {brewery.state}{" "}
-                {brewery.country}
-              </Typography>
+              <Box py={2}>
+                <Typography variant="h6">{brewery.name}</Typography>
+                <Typography variant="body2" color="textSecondary">
+                  Address: {brewery.street}, {brewery.city}, {brewery.state}{" "}
+                  {brewery.country}
+                </Typography>
+              </Box>
             </ListItem>
           ))}
         </List>
       ) : (
         <Typography variant="body1">No breweries found.</Typography>
       )}
-    </Stack>
+    </Box>
   );
 };
 

@@ -56,7 +56,7 @@ function App() {
           </Typography>
         </Toolbar>
       </AppBar>
-      <Container maxWidth="md" sx={{ paddingTop: 20 }}>
+      <Container maxWidth="md" sx={{ pt: 5, pb: 5 }}>
         <Routes>
           <Route path="/" element={<BreweriesContainer />} />
           <Route path="/Breweries/:id" element={<BreweriesDetails />} />

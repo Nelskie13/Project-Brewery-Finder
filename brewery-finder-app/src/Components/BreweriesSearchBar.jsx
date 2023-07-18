@@ -9,6 +9,7 @@ import {
   ListItemText,
   CircularProgress,
   Stack,
+  Paper,
 } from "@mui/material";
 import { Link } from "react-router-dom";
 import BreweryDetails from "./BreweriesDetails"; // Import the BreweryDetails component
@@ -63,19 +64,23 @@ const BrewerySearch = () => {
       ) : (
         searchResults.length > 0 && (
           <>
-            <List>
-              {searchResults.map((brewery) => (
-                <ListItem
-                  key={brewery.id}
-                  button
-                  onClick={() => handleBreweryClick(brewery)}
-                >
-                  <Link to={`/Breweries/${brewery.id}`}>
-                    <ListItemText primary={brewery.name} />
-                  </Link>
-                </ListItem>
-              ))}
-            </List>
+            <Paper elevation={3} sx={{ p: 1 }}>
+              <List>
+                {searchResults.map((brewery) => (
+                  <ListItem
+                    key={brewery.id}
+                    onClick={() => handleBreweryClick(brewery)}
+                  >
+                    <Link
+                      to={`/Breweries/${brewery.id}`}
+                      style={{ textDecoration: "none" }}
+                    >
+                      <ListItemText primary={brewery.name} />
+                    </Link>
+                  </ListItem>
+                ))}
+              </List>
+            </Paper>
             {selectedBrewery && <BreweryDetails brewery={selectedBrewery} />}
           </>
         )
