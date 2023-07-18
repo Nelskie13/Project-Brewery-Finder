@@ -10,6 +10,31 @@ import {
   ListItem,
   Stack,
 } from "@chakra-ui/react";
+import { Link } from "react-router-dom";
+
+// Create a separate component for displaying loading state
+const LoadingState = () => (
+  <Box
+    display="flex"
+    justifyContent="center"
+    alignItems="center"
+    height="300px"
+  >
+    <Spinner size="lg" />
+  </Box>
+);
+
+// Create a separate component for displaying error state
+const ErrorState = ({ error }) => (
+  <Box
+    display="flex"
+    justifyContent="center"
+    alignItems="center"
+    height="300px"
+  >
+    <Text>Error: {error}</Text>
+  </Box>
+);
 
 const BreweriesList = () => {
   const dispatch = useDispatch();
@@ -20,29 +45,11 @@ const BreweriesList = () => {
   }, [dispatch]);
 
   if (loading) {
-    return (
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        height="300px"
-      >
-        <Spinner size="lg" />
-      </Box>
-    );
+    return <LoadingState />;
   }
 
   if (error) {
-    return (
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        height="300px"
-      >
-        <Text>Error: {error}</Text>
-      </Box>
-    );
+    return <ErrorState error={error} />;
   }
 
   return (
@@ -50,17 +57,24 @@ const BreweriesList = () => {
       <Heading as="h2" size="lg">
         List of Breweries
       </Heading>
-      <UnorderedList>
-        {data.map((brewery) => (
-          <ListItem key={brewery.id}>
-            {brewery.name}
-            <Text>
-              Address: {brewery.address_1}, {brewery.city},{" "}
-              {brewery.state_province}
-            </Text>
-          </ListItem>
-        ))}
-      </UnorderedList>
+      {data.length > 0 ? (
+        <UnorderedList>
+          {data.map((brewery) => (
+            <ListItem key={brewery.id}>
+              <Link to={`/Breweries/${brewery.id}`}>
+                {brewery.name}
+                <Text>
+                  Address: {brewery.street}, {brewery.city}, {brewery.state}{" "}
+                  {""}
+                  {brewery.country}
+                </Text>
+              </Link>
+            </ListItem>
+          ))}
+        </UnorderedList>
+      ) : (
+        <Text>No breweries found.</Text>
+      )}
     </Stack>
   );
 };
