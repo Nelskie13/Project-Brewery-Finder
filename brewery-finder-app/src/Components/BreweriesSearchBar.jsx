@@ -2,12 +2,14 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { fetchBreweriesSearchData } from "../Redux-store/BrewerySearchSlice";
 import {
-  Heading,
-  Input,
-  UnorderedList,
+  Typography,
+  TextField,
+  List,
   ListItem,
+  ListItemText,
+  CircularProgress,
   Stack,
-} from "@chakra-ui/react";
+} from "@mui/material";
 import { Link } from "react-router-dom";
 import BreweryDetails from "./BreweriesDetails"; // Import the BreweryDetails component
 
@@ -44,31 +46,36 @@ const BrewerySearch = () => {
   };
 
   return (
-    <Stack>
-      <Heading as="h2" size="lg">
+    <Stack spacing={2}>
+      <Typography variant="h4" component="h2">
         Search Breweries
-      </Heading>
-      <Input
+      </Typography>
+      <TextField
         type="text"
         value={searchTerm}
         onChange={handleSearch}
         placeholder="Search breweries..."
+        fullWidth
+        variant="outlined"
       />
       {loading ? (
-        <p>Loading...</p>
+        <CircularProgress />
       ) : (
         searchResults.length > 0 && (
           <>
-            <UnorderedList>
+            <List>
               {searchResults.map((brewery) => (
                 <ListItem
                   key={brewery.id}
+                  button
                   onClick={() => handleBreweryClick(brewery)}
                 >
-                  <Link to={`/Breweries/${brewery.id}`}>{brewery.name}</Link>
+                  <Link to={`/Breweries/${brewery.id}`}>
+                    <ListItemText primary={brewery.name} />
+                  </Link>
                 </ListItem>
               ))}
-            </UnorderedList>
+            </List>
             {selectedBrewery && <BreweryDetails brewery={selectedBrewery} />}
           </>
         )

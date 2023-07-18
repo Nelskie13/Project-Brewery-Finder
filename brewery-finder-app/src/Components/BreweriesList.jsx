@@ -3,13 +3,12 @@ import { useSelector, useDispatch } from "react-redux";
 import { fetchBreweriesData } from "../Redux-store/BreweryListSlice";
 import {
   Box,
-  Heading,
-  Text,
-  Spinner,
-  UnorderedList,
+  Typography,
+  CircularProgress,
+  List,
   ListItem,
   Stack,
-} from "@chakra-ui/react";
+} from "@mui/material";
 import { Link } from "react-router-dom";
 
 // Create a separate component for displaying loading state
@@ -20,7 +19,7 @@ const LoadingState = () => (
     alignItems="center"
     height="300px"
   >
-    <Spinner size="lg" />
+    <CircularProgress size={48} />
   </Box>
 );
 
@@ -32,7 +31,9 @@ const ErrorState = ({ error }) => (
     alignItems="center"
     height="300px"
   >
-    <Text>Error: {error}</Text>
+    <Typography variant="body1" color="error">
+      Error: {error}
+    </Typography>
   </Box>
 );
 
@@ -53,27 +54,28 @@ const BreweriesList = () => {
   }
 
   return (
-    <Stack>
-      <Heading as="h2" size="lg">
+    <Stack spacing={2}>
+      <Typography variant="h4" component="h2" mt={10}>
         List of Breweries
-      </Heading>
+      </Typography>
       {data.length > 0 ? (
-        <UnorderedList>
+        <List>
           {data.map((brewery) => (
-            <ListItem key={brewery.id}>
-              <Link to={`/Breweries/${brewery.id}`}>
-                {brewery.name}
-                <Text>
-                  Address: {brewery.street}, {brewery.city}, {brewery.state}{" "}
-                  {""}
-                  {brewery.country}
-                </Text>
-              </Link>
+            <ListItem
+              key={brewery.id}
+              component={Link}
+              to={`/Breweries/${brewery.id}`}
+            >
+              <Typography variant="body1">{brewery.name}</Typography>
+              <Typography variant="body2" color="textSecondary">
+                Address: {brewery.street}, {brewery.city}, {brewery.state}{" "}
+                {brewery.country}
+              </Typography>
             </ListItem>
           ))}
-        </UnorderedList>
+        </List>
       ) : (
-        <Text>No breweries found.</Text>
+        <Typography variant="body1">No breweries found.</Typography>
       )}
     </Stack>
   );

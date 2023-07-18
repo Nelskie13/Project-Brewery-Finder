@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchBreweriesDetailsData } from "../Redux-store/BreweryDetailsSlice";
-import { Box, Heading, Text, Spinner } from "@chakra-ui/react";
+import { Box, Typography, CircularProgress } from "@mui/material";
 import Maps from "./Maps";
 
 const LoadingState = () => (
@@ -12,7 +12,7 @@ const LoadingState = () => (
     alignItems="center"
     height="300px"
   >
-    <Spinner size="lg" />
+    <CircularProgress size={48} />
   </Box>
 );
 
@@ -23,7 +23,9 @@ const ErrorState = ({ error }) => (
     alignItems="center"
     height="300px"
   >
-    <Text>Error: {error}</Text>
+    <Typography variant="body1" color="error">
+      Error: {error}
+    </Typography>
   </Box>
 );
 
@@ -60,26 +62,22 @@ const BreweryDetails = () => {
   // Check if latitude and longitude are valid before rendering the Maps component
   if (isNaN(lat) || isNaN(lng)) {
     return (
-      <div>
-        <Heading as="h3" size="md">
-          {name}
-        </Heading>
-        <Text>
+      <Box>
+        <Typography variant="h6">{name}</Typography>
+        <Typography variant="body1">
           Address: {street}, {city}, {state}, {country}.
-        </Text>
-        <Text>Invalid location data.</Text>
-      </div>
+        </Typography>
+        <Typography variant="body1">Invalid location data.</Typography>
+      </Box>
     );
   }
 
   return (
     <Box>
-      <Heading as="h3" size="md">
-        {name}
-      </Heading>
-      <Text>
+      <Typography variant="h6">{name}</Typography>
+      <Typography variant="body1">
         Address: {street}, {city}, {state}, {country}.
-      </Text>
+      </Typography>
       {/* Pass the latitude and longitude as numbers to the Maps component */}
       <Maps latitude={lat} longitude={lng} />
     </Box>
