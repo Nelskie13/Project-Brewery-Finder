@@ -48,7 +48,7 @@ function Maps({ latitude, longitude }) {
       ) : isLoaded && map ? (
         // Render the map only when it's loaded and map is available
         <GoogleMap
-          mapContainerStyle={{ width: "100%", height: "500px" }}
+          mapContainerStyle={{ width: "100%", height: "700px" }}
           center={{
             lat: latitude,
             lng: longitude,
