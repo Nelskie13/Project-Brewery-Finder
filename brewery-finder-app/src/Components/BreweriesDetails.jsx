@@ -68,7 +68,9 @@ const BreweryDetails = () => {
         <Typography variant="body1">
           Address: {street}, {city}, {state}, {country}.
         </Typography>
-        <Typography variant="body1">Invalid location data.</Typography>
+        <Typography variant="body1" color={"error"}>
+          Invalid location data.
+        </Typography>
       </Box>
     );
   }
