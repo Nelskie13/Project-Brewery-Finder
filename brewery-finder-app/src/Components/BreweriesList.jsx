@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchBreweriesData } from "../Redux-store/BreweryListSlice";
 import {
@@ -7,8 +7,17 @@ import {
   CircularProgress,
   List,
   ListItem,
+  IconButton,
 } from "@mui/material";
+import {
+  StarBorder as StarOutlineIcon,
+  Star as StarIcon,
+} from "@mui/icons-material";
 import { Link } from "react-router-dom";
+import {
+  addToWishlist,
+  removeFromWishlist,
+} from "../Redux-store/WishlistSlice";
 
 const LoadingState = () => (
   <Box
@@ -42,6 +51,18 @@ const BreweriesList = () => {
     dispatch(fetchBreweriesData());
   }, [dispatch]);
 
+  const wishlistBreweries = useSelector((state) => state.wishlist.breweries);
+  const isBreweryInWishlist = (breweryId) =>
+    wishlistBreweries.some((brewery) => brewery.id === breweryId);
+
+  const handleToggleWishlist = (breweryId) => {
+    if (isBreweryInWishlist(breweryId)) {
+      dispatch(removeFromWishlist(breweryId));
+    } else {
+      dispatch(addToWishlist(breweryId));
+    }
+  };
+
   if (loading) {
     return <LoadingState />;
   }
@@ -71,6 +92,20 @@ const BreweriesList = () => {
                   {brewery.country}
                 </Typography>
               </Box>
+
+              <IconButton
+                aria-label="add to wishlist"
+                onClick={() => handleToggleWishlist(brewery)}
+                sx={{
+                  color: isBreweryInWishlist(brewery.id) ? "gold" : "inherit",
+                }}
+              >
+                {isBreweryInWishlist(brewery.id) ? (
+                  <StarIcon />
+                ) : (
+                  <StarOutlineIcon />
+                )}
+              </IconButton>
             </ListItem>
           ))}
         </List>

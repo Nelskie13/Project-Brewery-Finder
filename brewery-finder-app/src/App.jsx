@@ -8,11 +8,13 @@ import {
   CssBaseline,
   Box,
   IconButton,
+  Button,
 } from "@mui/material";
 import BreweriesList from "./Components/BreweriesList";
 import BreweriesSearchBar from "./Components/BreweriesSearchBar";
 import BreweriesDetails from "./Components/BreweriesDetails";
-import { Home as HomeIcon } from "@mui/icons-material";
+import WishlistPage from "./Components/WishlistPage";
+import { Home as HomeIcon, Star as StarIcon } from "@mui/icons-material"; // New import
 
 const BreweriesContainer = () => (
   <>
@@ -53,12 +55,21 @@ function App() {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Brewery Finder
           </Typography>
+          <Button
+            component={Link}
+            to="/Wishlist"
+            color="inherit"
+            startIcon={<StarIcon />}
+          >
+            Wishlist
+          </Button>
         </Toolbar>
       </AppBar>
       <Container maxWidth="md" sx={{ pt: 5, pb: 5 }}>
         <Routes>
           <Route path="/" element={<BreweriesContainer />} />
           <Route path="/Breweries/:id" element={<BreweriesDetails />} />
+          <Route path="/Wishlist" element={<WishlistPage />} />
         </Routes>
       </Container>
       <Footer />
