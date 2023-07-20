@@ -1,69 +1,69 @@
-import { useState, useEffect } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { GoogleMap, useJsApiLoader, Marker } from "@react-google-maps/api";
+import { Box, CircularProgress, Typography } from "@mui/material";
 
 const API_KEY = "AIzaSyCq71N1GHDQWEhBF16jWgKY-pN4nM0fUFM";
 
 function Maps({ latitude, longitude }) {
-  const [map, setMap] = useState(null);
-
   const { isLoaded, loadError } = useJsApiLoader({
     id: "google-map-script",
     googleMapsApiKey: API_KEY,
   });
 
+  const [map, setMap] = useState(null);
+  const [latlong, setLatLong] = useState({ lat: latitude, lng: longitude });
+  const [icon, setIcon] = useState(null);
+
   useEffect(() => {
-    // Update the map center if latitude or longitude props change
-    setMap((prevMap) => ({
-      ...prevMap,
-      center: {
-        lat: latitude,
-        lng: longitude,
-      },
-    }));
+    setLatLong({ lat: latitude, lng: longitude });
   }, [latitude, longitude]);
 
-  const handleLoad = (map) => {
+  useEffect(() => {
+    if (isLoaded) {
+      setIcon({
+        url: "https://cdn-icons-png.flaticon.com/512/4821/4821951.png",
+        scaledSize: new window.google.maps.Size(70, 70), // Adjust the size of the icon as needed
+      });
+    }
+  }, [isLoaded]);
+
+  const onLoad = useCallback((map) => {
     setMap(map);
-  };
+  }, []);
 
-  const handleUnmount = () => {
+  const onUnmount = useCallback((map) => {
     setMap(null);
-  };
+  }, []);
 
-  const handleMapClick = (e) => {
-    // Update the center state with the clicked coordinates
-    setMap((prevMap) => ({
-      ...prevMap,
-      center: {
-        lat: e.latLng.lat(),
-        lng: e.latLng.lng(),
-      },
-    }));
-  };
+  if (loadError) {
+    return (
+      <Typography variant="body1" color="error">
+        Failed to load Google Maps API.
+      </Typography>
+    );
+  }
 
   return (
-    <>
-      {loadError ? (
-        <div>Error loading Google Map</div>
-      ) : isLoaded && map ? (
-        // Render the map only when it's loaded and map is available
-        <GoogleMap
-          mapContainerStyle={{ width: "100%", height: "700px" }}
-          center={{
-            lat: latitude,
-            lng: longitude,
-          }}
-          zoom={15}
-          onLoad={handleLoad}
-          onUnmount={handleUnmount}
-          onClick={handleMapClick}
-        >
-          {map && <Marker position={{ lat: latitude, lng: longitude }} />}
-        </GoogleMap>
+    <Box
+      height="600px"
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+    >
+      {!isLoaded ? (
+        <CircularProgress />
       ) : (
-        <div>Loading Google Map...</div>
+        <GoogleMap
+          mapContainerStyle={{ width: "100%", height: "100%" }}
+          center={latlong}
+          zoom={10}
+          onLoad={onLoad}
+          onUnmount={onUnmount}
+        >
+          {icon && map && <Marker position={latlong} icon={icon} />}
+        </GoogleMap>
       )}
-    </>
+    </Box>
   );
 }
 

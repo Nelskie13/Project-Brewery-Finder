@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchBreweriesData } from "../Redux-store/BreweryListSlice";
 import {
@@ -7,11 +7,18 @@ import {
   CircularProgress,
   List,
   ListItem,
-  Stack,
+  IconButton,
 } from "@mui/material";
+import {
+  StarBorder as StarOutlineIcon,
+  Star as StarIcon,
+} from "@mui/icons-material";
 import { Link } from "react-router-dom";
+import {
+  addToWishlist,
+  removeFromWishlist,
+} from "../Redux-store/WishlistSlice";
 
-// Create a separate component for displaying loading state
 const LoadingState = () => (
   <Box
     display="flex"
@@ -23,7 +30,6 @@ const LoadingState = () => (
   </Box>
 );
 
-// Create a separate component for displaying error state
 const ErrorState = ({ error }) => (
   <Box
     display="flex"
@@ -45,6 +51,18 @@ const BreweriesList = () => {
     dispatch(fetchBreweriesData());
   }, [dispatch]);
 
+  const wishlistBreweries = useSelector((state) => state.wishlist.breweries);
+  const isBreweryInWishlist = (breweryId) =>
+    wishlistBreweries.some((brewery) => brewery.id === breweryId);
+
+  const handleToggleWishlist = (breweryId) => {
+    if (isBreweryInWishlist(breweryId)) {
+      dispatch(removeFromWishlist(breweryId));
+    } else {
+      dispatch(addToWishlist(breweryId));
+    }
+  };
+
   if (loading) {
     return <LoadingState />;
   }
@@ -54,8 +72,8 @@ const BreweriesList = () => {
   }
 
   return (
-    <Stack spacing={2}>
-      <Typography variant="h4" component="h2" mt={10}>
+    <Box>
+      <Typography variant="h4" component="h2" mt={8}>
         List of Breweries
       </Typography>
       {data.length > 0 ? (
@@ -65,19 +83,36 @@ const BreweriesList = () => {
               key={brewery.id}
               component={Link}
               to={`/Breweries/${brewery.id}`}
+              sx={{ textDecoration: "none", color: "inherit" }}
             >
-              <Typography variant="body1">{brewery.name}</Typography>
-              <Typography variant="body2" color="textSecondary">
-                Address: {brewery.street}, {brewery.city}, {brewery.state}{" "}
-                {brewery.country}
-              </Typography>
+              <Box py={2}>
+                <Typography variant="h6">{brewery.name}</Typography>
+                <Typography variant="body2" color="textSecondary">
+                  Address: {brewery.street}, {brewery.city}, {brewery.state}{" "}
+                  {brewery.country}
+                </Typography>
+              </Box>
+
+              <IconButton
+                aria-label="add to wishlist"
+                onClick={() => handleToggleWishlist(brewery)}
+                sx={{
+                  color: isBreweryInWishlist(brewery.id) ? "gold" : "inherit",
+                }}
+              >
+                {isBreweryInWishlist(brewery.id) ? (
+                  <StarIcon />
+                ) : (
+                  <StarOutlineIcon />
+                )}
+              </IconButton>
             </ListItem>
           ))}
         </List>
       ) : (
         <Typography variant="body1">No breweries found.</Typography>
       )}
-    </Stack>
+    </Box>
   );
 };
 

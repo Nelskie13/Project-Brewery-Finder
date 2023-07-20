@@ -2,8 +2,22 @@ import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchBreweriesDetailsData } from "../Redux-store/BreweryDetailsSlice";
-import { Box, Typography, CircularProgress } from "@mui/material";
+import {
+  Box,
+  Typography,
+  CircularProgress,
+  Paper,
+  IconButton,
+} from "@mui/material";
+import {
+  StarBorder as StarOutlineIcon,
+  Star as StarIcon,
+} from "@mui/icons-material";
 import Maps from "./Maps";
+import {
+  addToWishlist,
+  removeFromWishlist,
+} from "../Redux-store/WishlistSlice";
 
 const LoadingState = () => (
   <Box
@@ -40,6 +54,18 @@ const BreweryDetails = () => {
     dispatch(fetchBreweriesDetailsData(id));
   }, [dispatch, id]);
 
+  const wishlistBreweries = useSelector((state) => state.wishlist.breweries);
+  const isBreweryInWishlist = (breweryId) =>
+    wishlistBreweries.some((brewery) => brewery.id === breweryId);
+
+  const handleToggleWishlist = () => {
+    if (isBreweryInWishlist(data.id)) {
+      dispatch(removeFromWishlist(data.id));
+    } else {
+      dispatch(addToWishlist(data));
+    }
+  };
+
   if (loading) {
     return <LoadingState />;
   }
@@ -53,7 +79,8 @@ const BreweryDetails = () => {
     return null; // Return null or display a message if the data is null
   }
 
-  const { name, street, city, state, country, latitude, longitude } = data;
+  const { name, street, city, state, country, latitude, longitude, phone } =
+    data;
 
   // Convert latitude and longitude from strings to numbers
   const lat = parseFloat(latitude);
@@ -67,20 +94,43 @@ const BreweryDetails = () => {
         <Typography variant="body1">
           Address: {street}, {city}, {state}, {country}.
         </Typography>
-        <Typography variant="body1">Invalid location data.</Typography>
+        <Typography variant="body1" color={"error"}>
+          Invalid location data.
+        </Typography>
+        <IconButton
+          aria-label="add to wishlist"
+          onClick={() => handleToggleWishlist(id)}
+          sx={{ color: isBreweryInWishlist(id) ? "gold" : "inherit" }}
+        >
+          {isBreweryInWishlist(id) ? <StarIcon /> : <StarOutlineIcon />}
+        </IconButton>
       </Box>
     );
   }
 
   return (
-    <Box>
-      <Typography variant="h6">{name}</Typography>
-      <Typography variant="body1">
+    <Paper elevation={3} sx={{ p: 2, pb: 2 }}>
+      <Typography variant="h6" gutterBottom>
+        {name}
+      </Typography>
+      <Typography>
         Address: {street}, {city}, {state}, {country}.
       </Typography>
+      {!phone ? (
+        <Typography>Phone: N/A</Typography>
+      ) : (
+        <Typography>Phone: {phone}</Typography>
+      )}
+      <IconButton
+        aria-label="add to wishlist"
+        onClick={() => handleToggleWishlist(id)}
+        sx={{ color: isBreweryInWishlist(id) ? "gold" : "inherit" }}
+      >
+        {isBreweryInWishlist(id) ? <StarIcon /> : <StarOutlineIcon />}
+      </IconButton>
       {/* Pass the latitude and longitude as numbers to the Maps component */}
       <Maps latitude={lat} longitude={lng} />
-    </Box>
+    </Paper>
   );
 };
 
