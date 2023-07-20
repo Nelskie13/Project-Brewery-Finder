@@ -45,7 +45,7 @@ function Maps({ latitude, longitude }) {
 
   return (
     <Box
-      height="700px"
+      height="600px"
       display="flex"
       justifyContent="center"
       alignItems="center"

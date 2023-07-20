@@ -36,7 +36,7 @@ const WishlistPage = () => {
 
   return (
     <Box>
-      <Typography variant="h4" component="h2" mt={8}>
+      <Typography variant="h4" component="h2" mt={3}>
         Wishlist
       </Typography>
       {wishlistBreweries.length > 0 ? (
