@@ -147,7 +147,7 @@ const BreweriesList = () => {
     <>
       {showAlert && (
         <AlertMessage
-          severity={showAlert ? "error" : "success"}
+          severity={showAlert ? "success" : "error "}
           message={showAlert}
           onClose={() => setShowAlert(null)}
         />

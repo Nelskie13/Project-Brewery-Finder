@@ -128,7 +128,7 @@ const BreweryDetails = () => {
       <>
         {showAlert && (
           <AlertMessage
-            severity={isBreweryInWishlist(id) ? "error" : "success"}
+            severity={isBreweryInWishlist(id) ? "success" : "error"}
             message={showAlert}
             onClose={() => setShowAlert(null)}
           />
@@ -186,7 +186,7 @@ const BreweryDetails = () => {
     <>
       {showAlert && (
         <AlertMessage
-          severity={isBreweryInWishlist(id) ? "error" : "success"}
+          severity={isBreweryInWishlist(id) ? "success" : "error"}
           message={showAlert}
           onClose={() => setShowAlert(null)}
         />
