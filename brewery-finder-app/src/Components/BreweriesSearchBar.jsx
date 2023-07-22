@@ -20,6 +20,7 @@ const BrewerySearch = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedBrewery, setSelectedBrewery] = useState(null); // State to store the selected brewery
+  const [noResults, setNoResults] = useState(false); // State to track if no results were found
 
   const handleSearch = (event) => {
     const { value } = event.target;
@@ -32,13 +33,18 @@ const BrewerySearch = () => {
       setTimeout(() => {
         dispatch(fetchBreweriesSearchData(value.trim())).then((action) => {
           setLoading(false);
-          if (action.payload) {
+          if (action.payload && action.payload.length > 0) {
             setSearchResults(action.payload);
+            setNoResults(false); // Reset noResults state when results are found
+          } else {
+            setSearchResults([]);
+            setNoResults(true); // Set noResults state when no results are found
           }
         });
       }, 300);
     } else {
       setSearchResults([]);
+      setNoResults(false); // Reset noResults state when search term is empty
     }
   };
 
@@ -47,7 +53,7 @@ const BrewerySearch = () => {
   };
 
   return (
-    <Stack spacing={2}>
+    <Stack spacing={2} mt={10}>
       <Typography variant="h4" component="h2">
         Search Breweries
       </Typography>
@@ -62,28 +68,38 @@ const BrewerySearch = () => {
       {loading ? (
         <CircularProgress />
       ) : (
-        searchResults.length > 0 && (
-          <>
-            <Paper elevation={3} sx={{ p: 1 }}>
-              <List>
-                {searchResults.map((brewery) => (
-                  <ListItem
-                    key={brewery.id}
-                    onClick={() => handleBreweryClick(brewery)}
-                  >
-                    <Link
-                      to={`/Breweries/${brewery.id}`}
-                      style={{ textDecoration: "none" }}
-                    >
-                      <ListItemText primary={brewery.name} />
-                    </Link>
-                  </ListItem>
-                ))}
-              </List>
-            </Paper>
-            {selectedBrewery && <BreweryDetails brewery={selectedBrewery} />}
-          </>
-        )
+        <>
+          {noResults ? (
+            <Typography variant="body1" color={"error"}>
+              No results found.
+            </Typography>
+          ) : (
+            searchResults.length > 0 && (
+              <>
+                <Paper elevation={3} sx={{ p: 1 }}>
+                  <List>
+                    {searchResults.map((brewery) => (
+                      <ListItem
+                        key={brewery.id}
+                        onClick={() => handleBreweryClick(brewery)}
+                      >
+                        <Link
+                          to={`/Breweries/${brewery.id}`}
+                          style={{ textDecoration: "none" }}
+                        >
+                          <ListItemText primary={brewery.name} />
+                        </Link>
+                      </ListItem>
+                    ))}
+                  </List>
+                </Paper>
+                {selectedBrewery && (
+                  <BreweryDetails brewery={selectedBrewery} />
+                )}
+              </>
+            )
+          )}
+        </>
       )}
     </Stack>
   );
