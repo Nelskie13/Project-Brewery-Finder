@@ -194,7 +194,7 @@ const BreweryDetails = () => {
 
       <Paper
         elevation={10}
-        sx={{ p: 2, pb: 4, pt: 3, position: "relative", mt: 8 }}
+        sx={{ p: 2, pb: 2, pt: 2, position: "relative", mt: 8 }}
       >
         <IconButton
           aria-label="add to wishlist"

@@ -116,18 +116,6 @@ const BreweriesList = () => {
   const wishlistBreweries = useSelector((state) => state.wishlist.breweries);
   const [showAlert, setShowAlert] = useState(null);
 
-  useEffect(() => {
-    dispatch(fetchBreweriesData());
-  }, [dispatch]);
-
-  if (loading) {
-    return <LoadingState />;
-  }
-
-  if (error) {
-    return <ErrorState error={error} />;
-  }
-
   const handleToggleWishlist = (brewery) => {
     if (wishlistBreweries.some((b) => b.id === brewery.id)) {
       dispatch(removeFromWishlist(brewery.id));
@@ -137,17 +125,20 @@ const BreweriesList = () => {
       setShowAlert("Added to Wishlist!");
     }
 
-    // Set a timeout to hide the alerts after 3 seconds
     setTimeout(() => {
       setShowAlert(null);
     }, 2000);
   };
 
+  useEffect(() => {
+    dispatch(fetchBreweriesData());
+  }, [dispatch]);
+
   return (
     <>
       {showAlert && (
         <AlertMessage
-          severity={showAlert ? "success" : "error "}
+          severity={showAlert === "Added to Wishlist!" ? "success" : "error"}
           message={showAlert}
           onClose={() => setShowAlert(null)}
         />
@@ -156,7 +147,11 @@ const BreweriesList = () => {
         <Typography variant="h4" component="h2" mt={8}>
           List of Breweries
         </Typography>
-        {data.length > 0 ? (
+        {loading ? (
+          <LoadingState />
+        ) : error ? (
+          <ErrorState error={error} />
+        ) : data.length > 0 ? (
           <List>
             {data.map((brewery) => (
               <ListItem
