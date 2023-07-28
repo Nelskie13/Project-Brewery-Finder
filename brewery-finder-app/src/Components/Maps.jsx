@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect } from "react";
 import { GoogleMap, useJsApiLoader, Marker } from "@react-google-maps/api";
 import { Box, CircularProgress, Typography } from "@mui/material";
 
-const API_KEY = "AIzaSyCq71N1GHDQWEhBF16jWgKY-pN4nM0fUFM";
+const API_KEY = process.env.REACT_APP_API_KEY;
 
 function Maps({ latitude, longitude }) {
   const { isLoaded, loadError } = useJsApiLoader({
